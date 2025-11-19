@@ -29,6 +29,8 @@ import {PoseIllustration} from './illustrationGen/illustration';
 import {Skeleton, facePartName2Index} from './illustrationGen/skeleton';
 import {FileUtils} from './utils/fileUtils';
 
+import * as magritteSVG from './resources/illustration/magritte.svg';
+import * as crocodileSVG from './resources/illustration/crocodile.svg';
 import * as girlSVG from './resources/illustration/girl.svg';
 import * as boySVG from './resources/illustration/boy.svg';
 import * as abstractSVG from './resources/illustration/abstract.svg';
@@ -59,6 +61,8 @@ let mobile = false;
 const stats = new Stats();
 const avatarSvgs = {
   'girl': girlSVG.default,
+  'magritte': magritteSVG.default,
+  'crocodile': crocodileSVG.default,
   'boy': boySVG.default,
   'abstract': abstractSVG.default,
   'blathers': blathersSVG.default,
