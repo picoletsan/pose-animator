@@ -46,8 +46,8 @@ let videoHeight = 300;
 let faceDetection = null;
 let illustration = null;
 let canvasScope;
-let canvasWidth = 800;
-let canvasHeight = 800;
+let canvasWidth = 1920;
+let canvasHeight = 1080;
 
 // ML models
 let facemesh;
@@ -213,6 +213,31 @@ function detectPoseInRealTime(video) {
 
     if (poses.length >= 1 && illustration) {
       Skeleton.flipPose(poses[0]);
+
+      // If both wrists are below hips, we are in the correct pose.
+      const skeleton = {};
+      poses[0].keypoints.forEach(kp => {
+        skeleton[kp.part] = kp;
+      });
+
+      const correctPoseRange = 30; // pixels above or below hips
+      const minConfidence = 0.1;
+      if (skeleton['rightWrist'].score > minConfidence &&
+          skeleton['leftWrist'].score > minConfidence &&
+          skeleton['rightHip'].score > minConfidence &&
+          skeleton['leftHip'].score > minConfidence &&
+          Math.abs(skeleton['leftWrist'].position.x - skeleton['leftHip'].position.x) < correctPoseRange &&
+          Math.abs(skeleton['rightWrist'].position.x - skeleton['rightHip'].position.x) < correctPoseRange
+) {
+        // Correct pose
+        console.log('Correct pose');
+        document.getElementById('message').textContent = 'Correct pose';
+
+      } else {
+        // Not the correct pose
+        document.getElementById('message').innerHTML = '&nbsp;';
+      }
+
 
       if (faceDetection && faceDetection.length > 0) {
         let face = Skeleton.toFaceFrame(faceDetection[0]);
