@@ -231,11 +231,14 @@ function detectPoseInRealTime(video) {
 ) {
         // Correct pose
         console.log('Correct pose');
-        document.getElementById('message').textContent = 'Correct pose';
+        document.getElementById('message').style.display = 'block';
+        setTimeout(() => {
+          document.getElementById('message').style.display = 'none';
+        }, 10000);
 
       } else {
         // Not the correct pose
-        document.getElementById('message').innerHTML = '&nbsp;';
+        // document.getElementById('message').innerHTML = '&nbsp;';
       }
 
 
