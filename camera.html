@@ -109,6 +109,16 @@
         #output, #keypoints {
             display: none;
         }
+        #message {
+            position: fixed;
+            top: 10px;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            display: none;
+        }
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
@@ -136,7 +146,7 @@
         </div>
         <canvas class="illustration-canvas"></cavnas>
     </div>
-    <div id="message"></div>
+    <div id="message">You found the correct pose! Thanks for participating!</div>
 
     <div class="footer">
         <div class="footer-text">
