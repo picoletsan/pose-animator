@@ -291,8 +291,8 @@ export async function bindPage() {
     throw e;
   }
 
-  setupGui([], posenet);
-  setupFPS();
+  // setupGui([], posenet);
+  // setupFPS();
   
   toggleLoadingUI(false);
   detectPoseInRealTime(video, posenet);

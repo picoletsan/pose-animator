@@ -9,16 +9,16 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background-image: url('./resources/backgrounds/background-magritte.jpeg');
+            background-image: url(assets/background1.png);
         }
 
         .canvas-container {
-            width: 800px;
+            width: 100%;
             max-width: 100%;
             display: flex;
             justify-content: center;
             position: relative;
-        }
+                }
 
         .camera-canvas {
             position: absolute;
@@ -35,7 +35,7 @@
         }
 
         .illustration-canvas {
-            border: 1px solid #eeeeee;
+            border: none;
         }
 
         .footer {
@@ -44,6 +44,7 @@
             bottom: 0;
             width: 100%;
             color: black;
+            display: none;
         }
 
         .footer-text {
@@ -103,6 +104,10 @@
 
         .spinner-text {
             float: left;
+        }
+
+        #output, #keypoints {
+            display: none;
         }
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1">
