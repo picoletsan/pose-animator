@@ -46,8 +46,8 @@ let videoHeight = 300;
 let faceDetection = null;
 let illustration = null;
 let canvasScope;
-let canvasWidth = 800;
-let canvasHeight = 800;
+let canvasWidth = 1920;
+let canvasHeight = 1080;
 
 // ML models
 let facemesh;
