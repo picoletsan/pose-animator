@@ -5,6 +5,38 @@
     <title>PoseNet - Camera Feed Demo</title>
 
     <style>
+        #successMessage {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: none;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 60px;
+            border-radius: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            animation: successPop 0.5s ease-out;
+            border: 4px solid #ffd700;
+        }
+        
+        @keyframes successPop {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
         body {
             display: flex;
             flex-direction: column;
@@ -110,10 +142,6 @@
         #output, #keypoints {
             display: none;
         }
-        #message {
-            height: 100%;
-            border: solid 2px white;
-        }
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
@@ -139,9 +167,9 @@
             <canvas id="output" class="camera-canvas"></canvas>
             <canvas id="keypoints" class="camera-canvas"></canvas>
         </div>
-        <canvas class="illustration-canvas"></cavnas>
+        <canvas class="illustration-canvas"></canvas>
     </div>
-    <div id="message">You found the correct pose! Thanks for participating!</div>
+    <div id="successMessage">🎉 Congratulations! <br><br>Thanks for bringing my back!</div>
 
     <div class="footer">
         <div class="footer-text">

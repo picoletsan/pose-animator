@@ -58,6 +58,8 @@ let nmsRadius = 30.0;
 
 // Misc
 let mobile = false;
+let isFrozen = false;
+let animationFrameId = null;
 const stats = new Stats();
 const avatarSvgs = {
   'girl': girlSVG.default,
@@ -166,6 +168,11 @@ function detectPoseInRealTime(video) {
   keypointCanvas.height = videoHeight;
 
   async function poseDetectionFrame() {
+    // Skip detection if frozen
+    if (isFrozen) {
+      return;
+    }
+
     // Begin monitoring code for frames per second
     stats.begin();
 
@@ -220,25 +227,27 @@ function detectPoseInRealTime(video) {
         skeleton[kp.part] = kp;
       });
 
-      const correctPoseRange = 30; // pixels above or below hips
-      const minConfidence = 0.1;
-      if (skeleton['rightWrist'].score > minConfidence &&
-          skeleton['leftWrist'].score > minConfidence &&
-          skeleton['rightHip'].score > minConfidence &&
-          skeleton['leftHip'].score > minConfidence &&
-          Math.abs(skeleton['leftWrist'].position.x - skeleton['leftHip'].position.x) < correctPoseRange &&
-          Math.abs(skeleton['rightWrist'].position.x - skeleton['rightHip'].position.x) < correctPoseRange
-) {
+      if (poseMatchesPaintingPose(skeleton))
+      {
         // Correct pose
         console.log('Correct pose');
-        document.getElementById('message').style.display = 'block';
+        document.getElementById('successMessage').style.display = 'block';
+        
+        // Freeze everything
+        isFrozen = true;
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+        }
+        
         setTimeout(() => {
-          document.getElementById('message').style.display = 'none';
+          document.getElementById('successMessage').style.display = 'none';
+          isFrozen = false;
+          poseDetectionFrame();
         }, 10000);
 
       } else {
         // Not the correct pose
-        // document.getElementById('message').innerHTML = '&nbsp;';
+        // document.getElementById('successMessage').innerHTML = '&nbsp;';
       }
 
 
@@ -263,11 +272,51 @@ function detectPoseInRealTime(video) {
     // End monitoring code for frames per second
     stats.end();
 
-    requestAnimationFrame(poseDetectionFrame);
+    animationFrameId = requestAnimationFrame(poseDetectionFrame);
   }
 
   poseDetectionFrame();
 }
+
+function poseMatchesPaintingPose(pose) {
+  const correctPoseRange = 30; // pixels above or below hips
+  const minConfidence = 0.1;
+  
+  // hips must be within the central third of the screen
+  const hipsInTheMiddleOfScreen = (pose['leftHip'].score > minConfidence && pose['leftHip'].position.x > videoWidth / 3) &&
+                                 (pose['rightHip'].score > minConfidence && pose['rightHip'].position.x > videoWidth / 3) &&
+                                 (pose['leftHip'].position.x < videoWidth * 2 / 3) &&
+                                 (pose['rightHip'].position.x < videoWidth * 2 / 3);
+  if (!hipsInTheMiddleOfScreen) {
+    return false;
+  }
+  
+  const armsInTheMiddleOfScreen = (pose['leftWrist'].score > minConfidence && pose['leftWrist'].position.x > videoWidth / 3) &&
+                                  (pose['leftWrist'].score > minConfidence && pose['leftWrist'].position.x < videoWidth * 2 / 3) &&
+                                  (pose['rightWrist'].score > minConfidence && pose['rightWrist'].position.x > videoWidth / 3) &&
+                                  (pose['rightWrist'].score > minConfidence && pose['rightWrist'].position.x < videoWidth * 2 / 3);
+  if (!armsInTheMiddleOfScreen) {
+    return false;
+  }
+
+  const armsDown = (pose['leftWrist'].score > minConfidence && pose['leftWrist'].position.y > pose['leftElbow'].position.y) &&
+                                 (pose['rightWrist'].score > minConfidence && pose['rightWrist'].position.y > pose['rightElbow'].position.y) &&
+                                  (pose['leftElbow'].score > minConfidence) && pose['leftElbow'].position.y > pose['leftShoulder'].position.y &&
+                                  (pose['rightElbow'].score > minConfidence) && pose['rightElbow'].position.y > pose['rightShoulder'].position.y;
+  if (!armsDown) {
+    return false;
+  }
+
+  const wristsBelowHips = (pose['leftWrist'].score > minConfidence && pose['leftWrist'].position.y > pose['leftHip'].position.y) &&
+                          (pose['rightWrist'].score > minConfidence && pose['rightWrist'].position.y > pose['rightHip'].position.y);
+  
+  if (wristsBelowHips) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 
 function setupCanvas() {
   mobile = isMobile();
